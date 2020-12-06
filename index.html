@@ -32,33 +32,29 @@
             background-color: silver;
         }
 
-        /*
-        .left:before, .left:after {
-            content: "<<";
-        }
-        .right:before,.right:after {
-            content: ">>"
-        }
-        */
         .left, .right, .section {
             text-align: center;
         }
-        .left, .right {
+        .left, .right, .bidi {
             background: white;
             border-top: 3px solid white;
             border-bottom: 3px solid white;
-            background-size: 100% 20px;
+            background-size: 100% 90%;
             background-repeat: no-repeat;
             padding-left: 2em;
             padding-right: 2em;
         }
-        /* file size: 0.7ko | already optimized | base64 size: 0.9ko */
+        /* created using https://b64.io/ */
         .left {
             background-image: url(data:image/gif;base64,R0lGODlh9AFkALMAAAAAAIAAAACAAICAAAAAgIAAgP/ercDAwICAgP8AAAD/AP//AAAA//8A/////////yH5BAEAAA4ALAAAAAD0AWQAAAT+0MlJq7046827/2AojmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHLJbDqfUIvBEK1ar9isljSdbr/gsHgM7HrJ6LR6zc6Yu+24fE53vuH1vH7Pl93NfYGCg4Ruf3iFiYqLbIeOj5CRkpOUlZaXmJmam5ydnp+goaKSZKOmp6ipqqusra6vrGOws7S1tre4ubqXYbu+v8DBwsPBYMTHyMnKy8x3W83Q0dLT1KJa1djZ2tvUWNzf4OHit1fj5ufo6ZtV6u3u7+9Q8PP09dtP9vn6+8hN/P8AA9piIrCgwYOjlCBcyLBhpSQOI0qcSMUIxYsYDVrMyLFjPiL+HkOKjBdkpMmT5kqiXMky24+WMGNG8yGzps1jPG7q3OlrB8+fQGnlCEq06CocRpMqDWVjqdOnmmhAnUp10oyqWLM6g6G1a1euXsNWdSG2LNUWZtM+XaG27VIVbuMaRSG3LlETdvMCLaG3784RfgPfFCG4sEwQhhPD/KC48coOjiOf3CC58kgPljNjRKy5c0PCnkMX5CK69D68plPPo6u6dTq4rmOHYyG7tjaytnPPBKu7N04/voMDqyG8eK4bxpPPGqq8uSqfzqNbyym9OqeX1rNbUqm9+6Mh3sNvBSk+PJLy3RWir05wvXM77pPLiy+cHf3e5e7bzqJf9rP+qvVWAqBosgzYGRpWMaLgggx6A0mDEEYo4XmOTGjhhRjqcEiGHHboIW1vfCjiiCRihkiJKKZY4hkqtujiizDGKOOMNNZo44045qjjjjz26OOPQAYp5JASRgAAOw==);
         }
         .right {
             background-image: url(data:image/gif;base64,R0lGODlh9AFkALMAAAAAAIAAAACAAICAAAAAgIAAgP/ercDAwICAgP8AAAD/AP//AAAA//8A/////////yH5BAEAAA4ALAAAAAD0AWQAAAT+0MlJq7046827/2AojmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHLJbDqf0Kh0SpUaDNWsdsvtVq9Xr3hMLptf4PB5zW67y2nwe06v24tx+X3P7/tVeWl/g4SFhoGCZ4iLjI2Oj5CRkpOUlZaXmJmam5ydnp+PZqCjpKWmp6ipqqusqWStsLGys7S1treUY7i7vL2+v8C+XsHExcbHyMl5XcrNzs/Q0Z9b0tXW19jRWtnc3d7ftF/g4+Tl5pdU5+rr7OxW7fDx8tdQ8/b3+MVP+fz9/rNN/gkcSBAUk4IIEyqUpGShw4cQsSCJSLHiwCMWM2q8Z2Sjx4/+7oaAHElynJCSKFPSA6KypUtnP17KnEnMB82bOHfxyMmzZ6wdPoMKRZVjqNGjnnAgXcoUXY2mUKNCoiG1qtVlMq5q1Rpjq9eqML6KjepirFmmLc6qRbpirduhgN7K9Ylirt2eJu7qxVlir1+aI/4KfilisOGWIA4rRvlhsWOSHR5LBrlhsuWKHi5rXph4s2eBhT+LxkditOl4eU+rNld3tWtvcV/LrsZitu1nZW/r1hd2t+9eM34Lt/V0uPFWN44rJ6p0ufNpOp5L19RjuvVcNq9rbxRku3es3b977yj++sTy0huiX35wvXEn7oXXi6/7HX3Z6e67zqJfNbX+nw1VA6BmhhRo4IGvhILgggw2uA93DkYo4YThIULhhRhmSFUgGnbo4YepJQLiiCSWaIGIJqaooodqrOjiizDGKOOMNNZo44045qjjjjz26OOPQAYp5BIRAAA7);
         }
+        .bidi {
+            background-image: url(data:image/gif;base64,R0lGODlh9AFkALMAAAAAAIAAAACAAICAAAAAgIAAgP/ercDAwICAgP8AAAD/AP//AAAA//8A/////////yH5BAEAAA4ALAAAAAD0AWQAAAT+8MlJq7046827/2AojmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHLJbDqf0IrBEK1ar8spduuaarngsFjmpY7PnrIZzW67M+q3XP2V2+9i+hoP1u/5gIFMfoJXfnWFiYpBh3+LSI2Oj5OUZI2VRpGam5ydnp+goaKjpKWmp6ipqpiMqq6vsLGys7S1tq6sPbe7vL2+v8DBp7k5wsbHyMnKy6DENczQ0dLT1K/OMdXZ2tvc29ct3eHi4+S73ynl6err7M3nJO3x8vPs7yH0+Pn62vYc+/8AAyLrh0GgwYMIaRGkkLChw4elFkKcSLHiIXsWM2q0+G2jx4/+DYmBHElSIKaSKFPim6Sypct2iV7KnFkuEM2bOL3dycmz57Q5PoMKHchmqNGjwc4gXcr0VpimUKPK2iK1qlVUVq5q3TrqCdevYD0NCku2LCFIZtOq9ZJprdu0Q97KVQtkrl2zuu7qLatjr1+yN/4KBmxpsGGwMA4rRsxisWPGKB5L5npismXKIy5r1npvs+erHT6L5hx6tOmjmU+rzll5teuWK17LBvlitm2KM27rPhh4t++VfX8LV/djuPFuRI4rh5ZkuXNhTZ5LdwplunVrhq5r79pnu/dNaL6Lp/NmvHg85q8LSu/8EfvfrN7bviZ/Ncb6nxc+wH9ZP0P+i/l3dwGAgwmoAYF6GVgagmspCAKDeDmYGoSgSdgahVBZGBt4GnaIHoceqqBJiCS6MWKJjV2E4opPqchiiuS9KGNWesxYWxw25hgdjjp2wVaPQB5RRpDYSELkkTsgguSSTDbp5JNQRinllFRWaeWVWGap5ZZcdulfBAAAOw==);
+        }
+
         .empty TD {
             background-color: white;
         }
@@ -159,7 +155,7 @@
                         writeOneFieldUntil(0, parties.length, getLabel(line), "section")
                     } else {
                         o += "<tr>"
-                        if (line.indexOf("->") === -1) {
+                        if (line.indexOf("->") === -1 && line.indexOf("<-") === -1 && line.indexOf("<->") === -1) {
                             // we just have advice for a party
                             const p1 = line.split(" ")[0]
                             writeFieldsUntil(p1);
@@ -167,22 +163,43 @@
                             o += "<td class='set'>" + label + "</td>"
                         } else {
                             // we connect two parties
-                            log("  2p")
-                            const words = line.split(" ")[0].split("->")
-                            const p1 = words[0]
-                            const p2 = words[1]
+
+                            let words, p1, p2, bidi ;
+                            if (line.indexOf("<->") > -1) {
+                                log("  bidi")
+                                // bidi
+                                words = line.split(" ")[0].split("<->");
+                                p1 = words[0];
+                                p2 = words[1];
+                                bidi = true;
+                            } else if (line.indexOf("<-") > -1) {
+                                log("  left")
+                                // reverse
+                                words = line.split(" ")[0].split("<-");
+                                p1 = words[1];
+                                p2 = words[0];
+                            } else if (line.indexOf("->") > -1) {
+                                log("  right")
+                                // reverse
+                                words = line.split(" ")[0].split("->");
+                                p1 = words[0];
+                                p2 = words[1];
+                            }
+
                             const posOfP1 = parties.indexOf(p1)
                             const posOfP2 = parties.indexOf(p2)
                             if (posOfP1 < posOfP2) {
+                                log("  point right")
                                 const pos = writeFieldsUntil(p1);
                                 o += "<td class='set'></td>";    // the party field
-                                writeOneFieldUntil(pos, parties.indexOf(p2), getLabel(line), "right");
+                                writeOneFieldUntil(pos, parties.indexOf(p2), getLabel(line), bidi? "bidi": "right");
                                 o += "<td class='set'></td>";    // the party field
                             } else {
+                                log("  point left")
                                 const pos = writeFieldsUntil(p2);
                                 o += "<td class='set'></td>";    // the party field
                                 log("   p2 is " + p2)
-                                writeOneFieldUntil(pos, parties.indexOf(p1), getLabel(line), "left");
+                                writeOneFieldUntil(pos, parties.indexOf(p1), getLabel(line), bidi? "bidi": "left");
                                 o += "<td class='set'></td>";    // the party field
                             }
                         }
@@ -229,7 +246,7 @@
     <form>
         <textarea id="seqdata"># anything starting with a # is a comment
 # arbitrary HTML is shown first, then the parties follow
-# a party is any side of a A->B word, or a first word of a line
+# a party is any side of a A->B or A<->B or A<-B word, or a first word of a line
 # a line starting with a * starts a section
 # an empty line makes an empty row too
 #
