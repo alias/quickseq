@@ -107,6 +107,7 @@
 
             // jq stuff
             let $ghistloader = $("#ghistloader");
+            let $left = $("#left");
 
             function log(txt) {
                 console.log(txt)
@@ -302,7 +303,7 @@
 
                     let fileCount = 0;
                     let lastFileName = null;
-                    let rawFileOfCalledGhistFile = null;
+                    let selectedGhistFileObj = null;
                     let sel = $("<select>")
                     for (file in data.files) {
                         if (!data.files.hasOwnProperty(file)) continue
@@ -310,24 +311,23 @@
                         let selected = "";
                         if (ghistfile && ghistfile === file) {
                             selected = "selected";
-                            rawFileOfCalledGhistFile = data.files[file].raw_url
+                            selectedGhistFileObj = data.files[file]
                         }
 
-                        sel.append($("<option name='" + file + "' value='" + data.files[file].raw_url + "' " + selected + ">" + file + "</option>"));
+                        sel.append($("<option name='" + file + "' value='" + data.files[file].raw_url + " "+ data.files[file].filename + " " + ghist + "' " + selected + ">" + file + "</option>"));
                         fileCount++;
                     }
                     if (fileCount > 1) {
                         $ghistloader.append(sel)
                         $ghistloader.append($("<button id='loadFileBtn'>Load File</button>"));
 
-                        if (ghistfile) {
-                            loadGhistFile(rawFileOfCalledGhistFile)
+                        if (selectedGhistFileObj) {
+                            loadGhistFile(selectedGhistFileObj.raw_url,selectedGhistFileObj.filename, ghist)
                         }
 
                     } else {
                         // directly show the one file
-                        loadGhistFile(data.files[lastFileName].raw_url)
-                        $("body").find("h3").html(lastFileName)
+                        loadGhistFile(data.files[lastFileName].raw_url, lastFileName, ghist)
                     }
 
                 }).fail(function(ret) {
@@ -335,14 +335,19 @@
                 });
             }
 
-            function loadGhistFile(raw_url) {
+            function loadGhistFile(raw_url, filename, ghist) {
                 log("Fetch from " + raw_url);
-                if (raw_url) {
+                if ( raw_url) {
                     $.get(raw_url, function (data) {
                         $("#seqdata").val(data);
                         buildSeqDiagram();
-                        // set the url for a simpler copy paste
-                        //location.search="?ghist=" +ghistid would loop
+                        // prepare a share link
+                        $left.find("#share_link").remove();
+                        let bareUrl = location.href;
+                        if (bareUrl.indexOf("?" > -1)) bareUrl = bareUrl.substring(0, bareUrl.indexOf("?"))
+                        $left.append($("<a id='share_link' href='" + bareUrl + "?close=true&ghist=" + ghist + "&ghistfile=" + filename + "'>Share Link to \"" + filename + "\"</a>"));
+                        // and the headline
+                        $("body").find("h3").html(filename)
                     }).fail(function(ret) {
                         $("#seqdata").val("Error fetching file " + raw_url + " from Ghist: " + ret.status + ": " + ret.statusText)
                     });
@@ -352,8 +357,8 @@
             // btn handlers
 
             $ghistloader.on("click", "#loadFileBtn", function() {
-                let file = $ghistloader.find("select").val();
-                loadGhistFile(file);
+                let rfg = $ghistloader.find("select").val().split(" ");
+                loadGhistFile(rfg[0],rfg[1], rfg[2] );  // see select-value setting above
                 return false;
             })
 
@@ -363,7 +368,7 @@
             })
 
             function collapse() {
-                $("#left").fadeOut(function () {
+                $left.fadeOut(function () {
                     $("#right").addClass("rightFullWidth");
                     $("#reopen").removeClass("hidden");
                 })
@@ -372,9 +377,10 @@
             $("#collapse").click(function() {
                 collapse();
             });
+
             $("#reopen").click(function() {
                 $("#right").removeClass("rightFullWidth");
-                $("#left").fadeIn(function() {
+                $left.fadeIn(function() {
                     $("#reopen").addClass("hidden");
                 })
             });
