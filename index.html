@@ -116,6 +116,13 @@
                 return false;
             }
 
+            function partySeparator(line) {
+                if (line.indexOf("<->") > -1) return "<->"
+                if (line.indexOf("<-") > -1) return "<-"
+                if (line.indexOf("->") > -1) return "->"
+                return null
+            }
+
              // Render a table line by line
             function renderSeq(lines, parties) {
                 let o = "";    // out
@@ -174,7 +181,8 @@
                         writeOneFieldUntil(0, parties.length, getLabel(line), "section")
                     } else {
                         o += "<tr>"
-                        if (line.indexOf("->") === -1 && line.indexOf("<-") === -1 && line.indexOf("<->") === -1) {
+                        let ps = partySeparator(line);
+                        if (ps == null) {
                             // we just have advice for a party
                             const p1 = line.split(" ")[0]
                             writeFieldsUntil(p1);
@@ -183,24 +191,19 @@
                         } else {
                             // we connect two parties
 
-                            let words, p1, p2, bidi ;
-                            if (line.indexOf("<->") > -1) {
-                                log("  bidi")
+                            let p1, p2, bidi ;
+                            let words = getPartysOfLine(line, ps);
+                            if (ps === "<->") {
                                 // bidi
-                                words = line.split(" ")[0].split("<->");
                                 p1 = words[0];
                                 p2 = words[1];
                                 bidi = true;
-                            } else if (line.indexOf("<-") > -1) {
-                                log("  left")
+                            } else if (ps === "<-") {
                                 // reverse
-                                words = line.split(" ")[0].split("<-");
                                 p1 = words[1];
                                 p2 = words[0];
-                            } else if (line.indexOf("->") > -1) {
-                                log("  right")
+                            } else if (ps === "->") {
                                 // reverse
-                                words = line.split(" ")[0].split("->");
                                 p1 = words[0];
                                 p2 = words[1];
                             }
@@ -231,21 +234,25 @@
                 $out.html(o)
             }
 
+            function getPartysOfLine(line, sep) {
+                return line.split(" ")[0].split(sep);
+            }
+
             // get a party list
             function scanParties(lines) {
                 const parties = []
                 for (let line of lines) {
-                    console.log("Line: " + line)
                     if (line.trim().length === 0) continue
                     if (line.startsWith("#")) continue;  // a comment
                     if (line.startsWith("*")) continue;  // a section
                     if (line.startsWith("<")) continue;  // raw html
-                    const words = line.split(" ") ;
-                    const firstWord = words[0];
-                    if (firstWord.indexOf("->") === -1) {
+                    let ps = partySeparator(line);
+                    if (ps == null) {
+                        const words = line.split(" ") ;
+                        const firstWord = words[0];
                         if (parties.indexOf(firstWord) === -1) parties.push(firstWord)
                     } else {
-                        const twoParties = firstWord.split("->")
+                        const twoParties = getPartysOfLine(line, ps);
                         if (parties.indexOf(twoParties[0]) === -1) parties.push(twoParties[0])
                         if (parties.indexOf(twoParties[1]) === -1) parties.push(twoParties[1])
                     }
