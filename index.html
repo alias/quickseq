@@ -13,6 +13,9 @@
             padding: 2px;
             margin: 2px;
         }
+        h3 {
+            text-align: center;
+        }
 
         /* UI */
         #show {
@@ -102,6 +105,9 @@
             $("#show").click(buildSeqDiagram)
             const $out = $("#output")
 
+            // jq stuff
+            let $ghistloader = $("#ghistloader");
+
             function log(txt) {
                 console.log(txt)
             }
@@ -113,9 +119,9 @@
                     return // not false, shows the demo data
                 }
                 const lines = seqdata.split("\n")
-                log(lines)
+                //log(lines)
                 const parties = scanParties(lines)
-                log("found " + parties.length + " parties");
+                //log("found " + parties.length + " parties");
                 renderSeq(lines, parties);
                 return false;
             }
@@ -140,9 +146,7 @@
                     return pPosition;
                 }
                 function writeOneFieldUntil(startpos, pPosition, label, css) {
-                    console.log("pPos " + pPosition + " - " + startpos + "-1")
                     const cp = (pPosition - startpos-1) * 2 +1
-                    console.log("cspan " + cp)
                     o += "<td  class='set " + css + "' colspan='" + cp + "'>" + label + "</td>"
                 }
 
@@ -156,9 +160,9 @@
                 // write until a first sequence diagram row
                 function writeHTML(lines) {
                     for (line of lines) {
-                        if (line.startsWith("<")) {
+                        if (line.trim().length === 0 || line.startsWith("<")) {
                             o += "<tr class='raw'>"
-                            writeOneFieldUntil(0, parties.length, line, "raw")
+                            writeOneFieldUntil(0, parties.length+1, line, "raw")
                             o += "</tr>"
                         } else if (!line.startsWith("#")) {
                             break;
@@ -170,8 +174,9 @@
                 writeHTML(lines);
 
                 // parties header
+                o += "<td></td>"
                 for (let i = 0; i < parties.length; i++) {
-                    o += "<td></td><th>" + parties[i] + "</th>"
+                    o += "<th>" + parties[i] + "</th>"
                     if (i < parties.length -1) o += "<td></td>"
                 }
                 o += "</tr></thead>"
@@ -179,7 +184,7 @@
 
                 // seq, line by line
                 for (line of lines) {
-                    console.log("Line: " + line)
+                    //console.log("Line: " + line)
                     if (line.trim().length === 0) {      // insert a empty row
                         o += "<tr class='empty'>"
                         writeOneFieldUntil(0, parties.length+1, "&nbsp;", "empty")
@@ -227,16 +232,16 @@
                             const posOfP1 = parties.indexOf(p1)
                             const posOfP2 = parties.indexOf(p2)
                             if (posOfP1 < posOfP2) {
-                                log("  point right")
+                                //log("  point right")
                                 const pos = writeFieldsUntil(p1);
                                 o += "<td class='set'></td>";    // the party field
                                 writeOneFieldUntil(pos, parties.indexOf(p2), getLabel(line), bidi? "bidi": "right");
                                 o += "<td class='set'></td>";    // the party field
                             } else {
-                                log("  point left")
+                                //log("  point left")
                                 const pos = writeFieldsUntil(p2);
                                 o += "<td class='set'></td>";    // the party field
-                                log("   p2 is " + p2)
+                                //log("   p2 is " + p2)
                                 writeOneFieldUntil(pos, parties.indexOf(p1), getLabel(line), bidi? "bidi": "left");
                                 o += "<td class='set'></td>";    // the party field
                             }
@@ -245,15 +250,17 @@
                     o += "</tr>"
 
                 }
+                // write trailing HTML
                 let lastHTMLStart = 0
-                for (l of lines.reverse()) {
+                for (let i = lines.length-1 ; i >= 0; i--) {
                     lastHTMLStart++;
+                    let line = lines[i]
                     if (line.trim().length === 0 ) continue;
                     if (line.startsWith("<")) continue;
                     if (line.startsWith("#")) continue;
                     break;
                 }
-                writeHTML(lines.slice(lines.length - lastHTMLStart))
+                writeHTML(lines.slice(lines.length - lastHTMLStart +1))
                 o+= "</tbody></table>"
 
                 $out.html(o)
@@ -288,27 +295,67 @@
             //
             function loadFromGhist(ghistid) {
                 const url = "https://api.github.com/gists/" + ghistid
+                const ghistfile = urlParams.get('ghistfile');
+                console.log("GF:" + ghistfile + "<")
                 $.get(url, function (data) {
-                    let success = false;
+                    console.log(data)
+
+                    let fileCount = 0;
+                    let lastFileName = null;
+                    let rawFileOfCalledGhistFile = null;
+                    let sel = $("<select>")
                     for (file in data.files) {
                         if (!data.files.hasOwnProperty(file)) continue
-                        console.log(data.files[file])
-                        const raw_url = data.files[file].raw_url
-                        log("Fetch from " + raw_url);
-                        if (raw_url) {
-                            $.get(raw_url, function (data) {
-                                $("#seqdata").val(data);
-                                buildSeqDiagram();
-                                // set the url for a simpler copy paste
-                                location.search="?ghist=" +ghistid
-                            });
-                            break; // we only take the first one
+                        lastFileName = file;
+                        let selected = "";
+                        if (ghistfile && ghistfile === file) {
+                            selected = "selected";
+                            rawFileOfCalledGhistFile = data.files[file].raw_url
                         }
+
+                        sel.append($("<option name='" + file + "' value='" + data.files[file].raw_url + "' " + selected + ">" + file + "</option>"));
+                        fileCount++;
                     }
+                    if (fileCount > 1) {
+                        $ghistloader.append(sel)
+                        $ghistloader.append($("<button id='loadFileBtn'>Load File</button>"));
+
+                        if (ghistfile) {
+                            loadGhistFile(rawFileOfCalledGhistFile)
+                        }
+
+                    } else {
+                        // directly show the one file
+                        loadGhistFile(data.files[lastFileName].raw_url)
+                        $("body").find("h3").html(lastFileName)
+                    }
+
+                }).fail(function(ret) {
+                    $("#seqdata").val("Error fetching from Ghist: " + ret.status + ": " + ret.statusText)
                 });
             }
 
+            function loadGhistFile(raw_url) {
+                log("Fetch from " + raw_url);
+                if (raw_url) {
+                    $.get(raw_url, function (data) {
+                        $("#seqdata").val(data);
+                        buildSeqDiagram();
+                        // set the url for a simpler copy paste
+                        //location.search="?ghist=" +ghistid would loop
+                    }).fail(function(ret) {
+                        $("#seqdata").val("Error fetching file " + raw_url + " from Ghist: " + ret.status + ": " + ret.statusText)
+                    });
+                }
+            }
+
             // btn handlers
+
+            $ghistloader.on("click", "#loadFileBtn", function() {
+                let file = $ghistloader.find("select").val();
+                loadGhistFile(file);
+                return false;
+            })
 
             $("#loadGhistBtn").click(function() {
                 loadFromGhist($("#loadGhistId").val())
@@ -335,6 +382,7 @@
             $("#help").click(function() {
                 $("#helptxt").text(HELP.replaceAll("# ", ""))
             })
+
             // page ramp up code
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -342,7 +390,7 @@
             if (ghist) {
                 log("Called with ghist " + ghist)
                 loadFromGhist(ghist);
-                $("#loadGhistId").val(ghist)
+                $("#loadGhistId").val(ghist);
             } else {
                 $("#seqdata").val(SAMPLECODE)
                 buildSeqDiagram();
@@ -361,6 +409,7 @@
             "# An empty line makes an empty row too\n" +
             "# \n" +
             "# You may call this page with the parameters ghist=<id> to show a diagram from github. \n" +
+            "# if your ghist has several files, yoi may address a specific one ba adding a param ghistfile. \n" +
             "# Use a parameter close=true to start with the editor closed.\n"
 
         const SAMPLECODE = HELP +
