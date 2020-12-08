@@ -221,7 +221,7 @@
                             const p1 = line.split(" ")[0]
                             const pos = writeFieldsUntil(p1);
                             const label = line.substring(line.indexOf(" "))
-                            o += "<td class='set'>" + label + "</td>"
+                            o += "<td class='set' title='" + p1 + "'>" + label + "</td>"
                             writeRemainingFields(pos +1 )
                         } else {
                             // we connect two parties
@@ -248,15 +248,15 @@
                             let pos = 0;
                             if (posOfP1 < posOfP2) {
                                 pos = writeFieldsUntil(p1);
-                                o += "<td class='set'></td>";    // the party field
+                                o += "<td class='set' title='" + p1 + "'></td>";    // the party field
                                 writeOneFieldUntil(pos, parties.indexOf(p2), getLabel(line), bidi? "bidi": "right");
-                                o += "<td class='set'></td>";    // the party field
+                                o += "<td class='set' title='" + p2 + "'></td>";    // the party field
                                 writeRemainingFields(parties.indexOf(p2)+1)
                             } else {
                                 pos = writeFieldsUntil(p2);
-                                o += "<td class='set'></td>";    // the party field
+                                o += "<td class='set' title='" + p2 + "'></td>";    // the party field
                                 writeOneFieldUntil(pos, parties.indexOf(p1), getLabel(line), bidi? "bidi": "left");
-                                o += "<td class='set'></td>";    // the party field
+                                o += "<td class='set' title='" + p1 + "'></td>";    // the party field
                                 writeRemainingFields( parties.indexOf(p1) + 1 )
                             }
                         }
