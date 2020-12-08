@@ -139,6 +139,13 @@
                 let o = "";    // out
                 let linenum = 0;
 
+                function writeRemainingFields(startPos) {
+                    for (let i = startPos; i < parties.length; i++) {
+                        o+= "<td></td><td></td>"
+                    }
+                    return parties.length - startPos;
+                }
+
                 function writeFieldsUntil(party) {
                     const pPosition = parties.indexOf(party)
                     for (let i = 0; i < pPosition; i++) {
@@ -146,9 +153,12 @@
                     }
                     return pPosition;
                 }
-                function writeOneFieldUntil(startpos, pPosition, label, css) {
-                    const cp = (pPosition - startpos-1) * 2 +1
+
+                function writeOneFieldUntil(startpos, pPosition, label, css, extraFields) {
+                    if (!extraFields) extraFields = 0
+                    const cp = (pPosition - startpos-1) * 2 +1 + extraFields;
                     o += "<td  class='set " + css + "' colspan='" + cp + "'>" + label + "</td>"
+                    return startpos + cp +1
                 }
 
                 function getLabel(line) {
@@ -181,14 +191,16 @@
                     if (i < parties.length -1) o += "<td></td>"
                 }
                 o += "</tr></thead>"
+
+                // start seq diag steps
                 o += "<tbody>"
 
                 // seq, line by line
                 for (line of lines) {
-                    //console.log("Line: " + line)
+                    console.log("Line: " + line)
                     if (line.trim().length === 0) {      // insert a empty row
                         o += "<tr class='empty'>"
-                        writeOneFieldUntil(0, parties.length+1, "&nbsp;", "empty")
+                        writeOneFieldUntil(0, parties.length, "&nbsp;", "empty", 1)
                         o += "</tr>"
                         continue
                     }
@@ -198,7 +210,7 @@
                     if (line.startsWith("*")) {
                         // a section separator
                         o += "<tr class='section'>";
-                        writeOneFieldUntil(0, parties.length, getLabel(line), "section")
+                        writeOneFieldUntil(0, parties.length, getLabel(line), "section", 1)
                     } else {
                         o += "<tr>"
                         o += "<td class='linenum'>" + linenum + "</td>";
@@ -207,9 +219,10 @@
                         if (ps == null) {
                             // we just have advice for a party
                             const p1 = line.split(" ")[0]
-                            writeFieldsUntil(p1);
+                            const pos = writeFieldsUntil(p1);
                             const label = line.substring(line.indexOf(" "))
                             o += "<td class='set'>" + label + "</td>"
+                            writeRemainingFields(pos +1 )
                         } else {
                             // we connect two parties
 
@@ -232,19 +245,19 @@
 
                             const posOfP1 = parties.indexOf(p1)
                             const posOfP2 = parties.indexOf(p2)
+                            let pos = 0;
                             if (posOfP1 < posOfP2) {
-                                //log("  point right")
-                                const pos = writeFieldsUntil(p1);
+                                pos = writeFieldsUntil(p1);
                                 o += "<td class='set'></td>";    // the party field
                                 writeOneFieldUntil(pos, parties.indexOf(p2), getLabel(line), bidi? "bidi": "right");
                                 o += "<td class='set'></td>";    // the party field
+                                writeRemainingFields(parties.indexOf(p2)+1)
                             } else {
-                                //log("  point left")
-                                const pos = writeFieldsUntil(p2);
+                                pos = writeFieldsUntil(p2);
                                 o += "<td class='set'></td>";    // the party field
-                                //log("   p2 is " + p2)
                                 writeOneFieldUntil(pos, parties.indexOf(p1), getLabel(line), bidi? "bidi": "left");
                                 o += "<td class='set'></td>";    // the party field
+                                writeRemainingFields( parties.indexOf(p1) + 1 )
                             }
                         }
                     }
@@ -336,6 +349,7 @@
 
                 }).fail(function(ret) {
                     $("#seqdata").val("Error fetching from Ghist: " + ret.status + ": " + ret.statusText)
+                    reopen();
                 });
             }
 
@@ -382,11 +396,15 @@
                 collapse();
             });
 
-            $("#reopen").click(function() {
+            function reopen() {
                 $("#right").removeClass("rightFullWidth");
-                $left.fadeIn(function() {
+                $left.fadeIn(function () {
                     $("#reopen").addClass("hidden");
                 })
+            }
+
+            $("#reopen").click(function() {
+                reopen();
             });
 
             $("#help").click(function() {
