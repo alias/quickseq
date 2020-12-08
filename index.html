@@ -35,30 +35,36 @@
             width: 45%;
             padding: 1em;
         }
-
-        /* sequence diagram */
         #seqdata {
             width: 100%;
             height: 30em;
         }
+
+        /* sequence diagram */
+
         #output table {
             border-spacing: 0;
         }
         #output table td, #output table th {
             min-width: 1em;
         }
+        /* thin lines around colums */
         #output table th, #output table td {
             border-left: 1px dotted silver;
+        }
+        #output table tr > td:last-of-type {
             border-right: 1px dotted silver;
         }
-        .set {
+        /* filled boxes */
+        #output .set {
             background-color: silver;
         }
 
-        .left, .right, .section {
+        #output .left, #output .right, #output .section {
             text-align: center;
         }
-        .left, .right, .bidi {
+        /* arrows common */
+        #output .left, #output .right, #output .bidi {
             background: white;
             border-top: 3px solid white;
             border-bottom: 3px solid white;
@@ -68,31 +74,55 @@
             padding-right: 2em;
         }
         /* arrows, created using https://b64.io/ */
-        .left {
+        #output .left {
             background-image: url(data:image/gif;base64,R0lGODlh9AFkALMAAAAAAIAAAACAAICAAAAAgIAAgP/ercDAwICAgP8AAAD/AP//AAAA//8A/////////yH5BAEAAA4ALAAAAAD0AWQAAAT+0MlJq7046827/2AojmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHLJbDqfUIvBEK1ar9isljSdbr/gsHgM7HrJ6LR6zc6Yu+24fE53vuH1vH7Pl93NfYGCg4Ruf3iFiYqLbIeOj5CRkpOUlZaXmJmam5ydnp+goaKSZKOmp6ipqqusra6vrGOws7S1tre4ubqXYbu+v8DBwsPBYMTHyMnKy8x3W83Q0dLT1KJa1djZ2tvUWNzf4OHit1fj5ufo6ZtV6u3u7+9Q8PP09dtP9vn6+8hN/P8AA9piIrCgwYOjlCBcyLBhpSQOI0qcSMUIxYsYDVrMyLFjPiL+HkOKjBdkpMmT5kqiXMky24+WMGNG8yGzps1jPG7q3OlrB8+fQGnlCEq06CocRpMqDWVjqdOnmmhAnUp10oyqWLM6g6G1a1euXsNWdSG2LNUWZtM+XaG27VIVbuMaRSG3LlETdvMCLaG3784RfgPfFCG4sEwQhhPD/KC48coOjiOf3CC58kgPljNjRKy5c0PCnkMX5CK69D68plPPo6u6dTq4rmOHYyG7tjaytnPPBKu7N04/voMDqyG8eK4bxpPPGqq8uSqfzqNbyym9OqeX1rNbUqm9+6Mh3sNvBSk+PJLy3RWir05wvXM77pPLiy+cHf3e5e7bzqJf9rP+qvVWAqBosgzYGRpWMaLgggx6A0mDEEYo4XmOTGjhhRjqcEiGHHboIW1vfCjiiCRihkiJKKZY4hkqtujiizDGKOOMNNZo44045qjjjjz26OOPQAYp5JASRgAAOw==);
         }
-        .right {
+        #output .right {
             background-image: url(data:image/gif;base64,R0lGODlh9AFkALMAAAAAAIAAAACAAICAAAAAgIAAgP/ercDAwICAgP8AAAD/AP//AAAA//8A/////////yH5BAEAAA4ALAAAAAD0AWQAAAT+0MlJq7046827/2AojmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHLJbDqf0Kh0SpUaDNWsdsvtVq9Xr3hMLptf4PB5zW67y2nwe06v24tx+X3P7/tVeWl/g4SFhoGCZ4iLjI2Oj5CRkpOUlZaXmJmam5ydnp+PZqCjpKWmp6ipqqusqWStsLGys7S1treUY7i7vL2+v8C+XsHExcbHyMl5XcrNzs/Q0Z9b0tXW19jRWtnc3d7ftF/g4+Tl5pdU5+rr7OxW7fDx8tdQ8/b3+MVP+fz9/rNN/gkcSBAUk4IIEyqUpGShw4cQsSCJSLHiwCMWM2q8Z2Sjx4/+7oaAHElynJCSKFPSA6KypUtnP17KnEnMB82bOHfxyMmzZ6wdPoMKRZVjqNGjnnAgXcoUXY2mUKNCoiG1qtVlMq5q1Rpjq9eqML6KjepirFmmLc6qRbpirduhgN7K9Ylirt2eJu7qxVlir1+aI/4KfilisOGWIA4rRvlhsWOSHR5LBrlhsuWKHi5rXph4s2eBhT+LxkditOl4eU+rNld3tWtvcV/LrsZitu1nZW/r1hd2t+9eM34Lt/V0uPFWN44rJ6p0ufNpOp5L19RjuvVcNq9rbxRku3es3b977yj++sTy0huiX35wvXEn7oXXi6/7HX3Z6e67zqJfNbX+nw1VA6BmhhRo4IGvhILgggw2uA93DkYo4YThIULhhRhmSFUgGnbo4YepJQLiiCSWaIGIJqaooodqrOjiizDGKOOMNNZo44045qjjjjz26OOPQAYp5BIRAAA7);
         }
-        .bidi {
+        #output .bidi {
             background-image: url(data:image/gif;base64,R0lGODlh9AFkALMAAAAAAIAAAACAAICAAAAAgIAAgP/ercDAwICAgP8AAAD/AP//AAAA//8A/////////yH5BAEAAA4ALAAAAAD0AWQAAAT+8MlJq7046827/2AojmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHLJbDqf0IrBEK1ar8spduuaarngsFjmpY7PnrIZzW67M+q3XP2V2+9i+hoP1u/5gIFMfoJXfnWFiYpBh3+LSI2Oj5OUZI2VRpGam5ydnp+goaKjpKWmp6ipqpiMqq6vsLGys7S1tq6sPbe7vL2+v8DBp7k5wsbHyMnKy6DENczQ0dLT1K/OMdXZ2tvc29ct3eHi4+S73ynl6err7M3nJO3x8vPs7yH0+Pn62vYc+/8AAyLrh0GgwYMIaRGkkLChw4elFkKcSLHiIXsWM2q0+G2jx4/+DYmBHElSIKaSKFPim6Sypct2iV7KnFkuEM2bOL3dycmz57Q5PoMKHchmqNGjwc4gXcr0VpimUKPK2iK1qlVUVq5q3TrqCdevYD0NCku2LCFIZtOq9ZJprdu0Q97KVQtkrl2zuu7qLatjr1+yN/4KBmxpsGGwMA4rRsxisWPGKB5L5npismXKIy5r1npvs+erHT6L5hx6tOmjmU+rzll5teuWK17LBvlitm2KM27rPhh4t++VfX8LV/djuPFuRI4rh5ZkuXNhTZ5LdwplunVrhq5r79pnu/dNaL6Lp/NmvHg85q8LSu/8EfvfrN7bviZ/Ncb6nxc+wH9ZP0P+i/l3dwGAgwmoAYF6GVgagmspCAKDeDmYGoSgSdgahVBZGBt4GnaIHoceqqBJiCS6MWKJjV2E4opPqchiiuS9KGNWesxYWxw25hgdjjp2wVaPQB5RRpDYSELkkTsgguSSTDbp5JNQRinllFRWaeWVWGap5ZZcdulfBAAAOw==);
         }
-        .empty TD {
+        #output .empty TD {
             background-color: white;
         }
-        TD.raw {
+        #output TD.raw {
             background-color: white;
         }
-        .section TD {
+        #output .section TD {
             background-color: white;
             color: gray;
             font-size: small;
             padding-top: 0.5em;
             border-bottom: 1px dotted silver;
         }
-        .linenum {
+        #output .linenum {
             font-size: smaller;
             color: gray;
+        }
+
+        /* some logic to highlight a loop */
+        #output tr.loopstart > td:first-child:after {
+            content: "loop";
+            font-size: smaller;
+            vertical-align: top;
+            padding-left: 3px;
+            float: right;
+        }
+        #output tr.loopstart > td:first-child {
+            border-top: 3px solid black;
+        }
+        #output tr.loopstart > td, #output tr.loopend > td {
+            border-top: 1px dashed black;
+        }
+        #output tr.loop > td:first-child {
+            border-left: 3px solid black;
+        }
+        #output tr.loop > td:last-child {
+            border-right: 3px solid black;
+        }
+        #output tr.loopend > td:first-child {
+           border-top: 3px solid black;
         }
     </style>
 
@@ -157,7 +187,7 @@
                 function writeOneFieldUntil(startpos, pPosition, label, css, extraFields) {
                     if (!extraFields) extraFields = 0
                     const cp = (pPosition - startpos-1) * 2 +1 + extraFields;
-                    o += "<td  class='set " + css + "' colspan='" + cp + "'>" + label + "</td>"
+                    o += "<td  class='" + css + "' colspan='" + cp + "'>" + label + "</td>"
                     return startpos + cp +1
                 }
 
@@ -196,10 +226,22 @@
                 o += "<tbody>"
 
                 // seq, line by line
-                for (line of lines) {
+
+                let inloop = false;   // lines starrting with a space identify a loop in the matrix
+
+                function checkLoopEnd() {
+                    let loopEndMark = ""
+                    if (inloop) {
+                        loopEndMark = "loopend"
+                        inloop = false;
+                    }
+                    return loopEndMark;
+                }
+
+                for (let line of lines) {
                     console.log("Line: " + line)
                     if (line.trim().length === 0) {      // insert a empty row
-                        o += "<tr class='empty'>"
+                        o += "<tr class='empty " + checkLoopEnd() + "'>"
                         writeOneFieldUntil(0, parties.length, "&nbsp;", "empty", 1)
                         o += "</tr>"
                         continue
@@ -212,7 +254,18 @@
                         o += "<tr class='section'>";
                         writeOneFieldUntil(0, parties.length, getLabel(line), "section", 1)
                     } else {
-                        o += "<tr>"
+                        if (line.startsWith(" ")) {
+                            // marks a loop
+                            let loopStartMark = ""
+                            if (!inloop) {
+                                loopStartMark = "loopstart"
+                                inloop = true;
+                            }
+                            o += "<tr class='loop " + loopStartMark + "'>"
+                            line = line.trim();
+                        } else {
+                            o += "<tr class='" + checkLoopEnd() + "'>"
+                        }
                         o += "<td class='linenum'>" + linenum + "</td>";
                         linenum++;
                         let ps = partySeparator(line);
@@ -248,15 +301,15 @@
                             let pos = 0;
                             if (posOfP1 < posOfP2) {
                                 pos = writeFieldsUntil(p1);
-                                o += "<td class='set' title='" + p1 + "'></td>";    // the party field
+                                o += "<td class='set pleft' title='" + p1 + "'></td>";    // the party field
                                 writeOneFieldUntil(pos, parties.indexOf(p2), getLabel(line), bidi? "bidi": "right");
-                                o += "<td class='set' title='" + p2 + "'></td>";    // the party field
+                                o += "<td class='set pright' title='" + p2 + "'></td>";    // the party field
                                 writeRemainingFields(parties.indexOf(p2)+1)
                             } else {
                                 pos = writeFieldsUntil(p2);
-                                o += "<td class='set' title='" + p2 + "'></td>";    // the party field
+                                o += "<td class='set pleft' title='" + p2 + "'></td>";    // the party field
                                 writeOneFieldUntil(pos, parties.indexOf(p1), getLabel(line), bidi? "bidi": "left");
-                                o += "<td class='set' title='" + p1 + "'></td>";    // the party field
+                                o += "<td class='set pright' title='" + p1 + "'></td>";    // the party field
                                 writeRemainingFields( parties.indexOf(p1) + 1 )
                             }
                         }
@@ -292,6 +345,7 @@
                     if (line.startsWith("#")) continue;  // a comment
                     if (line.startsWith("*")) continue;  // a section
                     if (line.startsWith("<")) continue;  // raw html
+                    if (line.startsWith(" ")) line = line.trim();  // a loop identation
                     let ps = partySeparator(line);
                     if (ps == null) {
                         const words = line.split(" ") ;
@@ -434,6 +488,7 @@
             "# Arbitrary HTML is shown first, then the parties follow. You can place HTML also at the end.\n" +
             "# A party is any side of a A->B or A<->B or A<-B word, or a first word of a line\n" +
             "# A line starting with a * starts a section\n" +
+            "# A line starting with a space marks a loop\n" +
             "# An empty line makes an empty row too\n" +
             "# \n" +
             "# You may call this page with the parameters ghist=<id> to show a diagram from github. \n" +
