@@ -242,7 +242,10 @@
                     console.log("Line: " + line)
                     if (line.trim().length === 0) {      // insert a empty row
                         o += "<tr class='empty " + checkLoopEnd() + "'>"
-                        writeOneFieldUntil(0, parties.length, "&nbsp;", "empty", 1)
+                        //writeOneFieldUntil(0, parties.length, "&nbsp;", "empty", 1)
+                        for (let i = 0; i< parties.length; i++) {
+                            o += "<td>&nbsp;</td><td></td></td>"
+                        }
                         o += "</tr>"
                         continue
                     }
