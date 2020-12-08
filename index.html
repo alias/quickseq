@@ -316,7 +316,7 @@
                             selectedGhistFileObj = data.files[file]
                         }
 
-                        $sel.append($("<option name='" + file + "' value='" + data.files[file].raw_url + " "+ encodeURIComponent(data.files[file].filename) + " " + ghist + "' " + selected + ">" + file + "</option>"));
+                        $sel.append($("<option name='" + file + "' value='" + data.files[file].raw_url + " "+ encodeURIComponent(data.files[file].filename) + " " + ghistid + "' " + selected + ">" + file + "</option>"));
                         fileCount++;
                     }
                     console.log(selectedGhistFileObj)
@@ -326,12 +326,12 @@
                         $p.append($("<button id='loadFileBtn'>Load File</button>"));
 
                         if (selectedGhistFileObj) {
-                            loadGhistFile(selectedGhistFileObj.raw_url,selectedGhistFileObj.filename, ghist)
+                            loadGhistFile(selectedGhistFileObj.raw_url,selectedGhistFileObj.filename, ghistid)
                         }
 
                     } else {
                         // directly show the one file
-                        loadGhistFile(data.files[lastFileName].raw_url, lastFileName, ghist)
+                        loadGhistFile(data.files[lastFileName].raw_url, lastFileName, ghistid)
                     }
 
                 }).fail(function(ret) {
@@ -351,7 +351,7 @@
                         if (bareUrl.indexOf("?" > -1)) bareUrl = bareUrl.substring(0, bareUrl.indexOf("?"))
                         $left.append($("<a id='share_link' href='" + bareUrl + "?close=true&ghist=" + ghist + "&ghistfile=" + filename + "'>Share Link to \"" + decodeURIComponent(filename) + "\"</a>"));
                         // and the headline
-                        $("body").find("h3").html(filename)
+                        $("body").find("h3").html(decodeURIComponent(filename))
                     }).fail(function(ret) {
                         $("#seqdata").val("Error fetching file " + raw_url + " from Ghist: " + ret.status + ": " + ret.statusText)
                     });
