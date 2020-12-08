@@ -304,7 +304,9 @@
                     let fileCount = 0;
                     let lastFileName = null;
                     let selectedGhistFileObj = null;
-                    let sel = $("<select>")
+                    $ghistloader.find("#ghistloader").remove();
+                    let $p = $("<span id='ghistloader'>");
+                    let $sel = $("<select>")
                     for (file in data.files) {
                         if (!data.files.hasOwnProperty(file)) continue
                         lastFileName = file;
@@ -314,12 +316,14 @@
                             selectedGhistFileObj = data.files[file]
                         }
 
-                        sel.append($("<option name='" + file + "' value='" + data.files[file].raw_url + " "+ data.files[file].filename + " " + ghist + "' " + selected + ">" + file + "</option>"));
+                        $sel.append($("<option name='" + file + "' value='" + data.files[file].raw_url + " "+ encodeURIComponent(data.files[file].filename) + " " + ghist + "' " + selected + ">" + file + "</option>"));
                         fileCount++;
                     }
+                    console.log(selectedGhistFileObj)
                     if (fileCount > 1) {
-                        $ghistloader.append(sel)
-                        $ghistloader.append($("<button id='loadFileBtn'>Load File</button>"));
+                        $p.append($sel);
+                        $ghistloader.append($p);
+                        $p.append($("<button id='loadFileBtn'>Load File</button>"));
 
                         if (selectedGhistFileObj) {
                             loadGhistFile(selectedGhistFileObj.raw_url,selectedGhistFileObj.filename, ghist)
@@ -345,7 +349,7 @@
                         $left.find("#share_link").remove();
                         let bareUrl = location.href;
                         if (bareUrl.indexOf("?" > -1)) bareUrl = bareUrl.substring(0, bareUrl.indexOf("?"))
-                        $left.append($("<a id='share_link' href='" + bareUrl + "?close=true&ghist=" + ghist + "&ghistfile=" + filename + "'>Share Link to \"" + filename + "\"</a>"));
+                        $left.append($("<a id='share_link' href='" + bareUrl + "?close=true&ghist=" + ghist + "&ghistfile=" + filename + "'>Share Link to \"" + decodeURIComponent(filename) + "\"</a>"));
                         // and the headline
                         $("body").find("h3").html(filename)
                     }).fail(function(ret) {
