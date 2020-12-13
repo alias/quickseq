@@ -196,8 +196,6 @@
                     return line.substring(line.indexOf(" "));
                 }
 
-                // write table heading
-                o += "<table ><thead><tr>"
 
                 // write until a first sequence diagram row
                 function writeHTML(lines) {
@@ -213,22 +211,18 @@
                 }
 
                 // any leading html first
-                writeHTML(lines);
-
-                // parties header
-                o += "<td></td>"
-                for (let i = 0; i < parties.length; i++) {
-                    o += "<th>" + parties[i] + "</th>"
-                    if (i < parties.length -1) o += "<td></td>"
-                }
-                o += "</tr></thead>"
+                //writeHTML(lines);
+                // write table heading
+                o += "<table >"
+                let headerWritten = false;
 
                 // start seq diag steps
                 o += "<tbody>"
 
                 // seq, line by line
 
-                let inloop = false;   // lines starrting with a space identify a loop in the matrix
+                let inloop = false;   // lines starting with a space identify a loop in the matrix
+                let inhtml = false
 
                 function checkLoopEnd() {
                     let loopEndMark = ""
@@ -239,99 +233,130 @@
                     return loopEndMark;
                 }
 
+                function writeEmptyLine(txt) {
+                    o += "<tr class='empty " + checkLoopEnd() + "'>"
+                    for (let i = 0; i < parties.length; i++) {
+                        o += "<td>" + txt + "</td><td></td></td>"
+                    }
+                    o += "</tr>"
+                }
+
                 for (let line of lines) {
-                    console.log("Line: " + line)
-                    if (line.trim().length === 0) {      // insert a empty row
-                        o += "<tr class='empty " + checkLoopEnd() + "'>"
-                        //writeOneFieldUntil(0, parties.length, "&nbsp;", "empty", 1)
-                        for (let i = 0; i< parties.length; i++) {
-                            o += "<td>&nbsp;</td><td></td></td>"
+                    //console.log("Line: " + line)
+
+                    // write html
+                    if (line.startsWith("<")) {
+                        if (inhtml) {
+                            o += line
+                        } else {
+                            o += "<tr class='html'><td colspan='" + parties.length * 2 + "'>";
+                            o += line
+                            inhtml = true
                         }
-                        o += "</tr>"
+                        continue;
+                    }
+                    if (inhtml) {
+                        if (line.startsWith(" ")) {
+                            // stay in html
+                            o+=line;
+                            continue
+                        }
+                        o += "</td></tr>"
+                        inhtml = false;
+                    }
+
+                    if (line.trim().length === 0) {      // insert a empty row
+                        writeEmptyLine("&nbsp;");
                         continue
                     }
-                    if (line.startsWith("#")) continue;  // a comment, ignore
-                    if (line.startsWith("<")) continue;  // html, we have that already
 
-                    if (line.startsWith("*")) {
+                    if (line.startsWith("#")) continue;  // a comment, ignore
+
+                    // parties header
+                    if (!headerWritten) {
+                        o += "<tr><td></td>"
+                        for (let i = 0; i < parties.length; i++) {
+                            o += "<th>" + parties[i] + "</th>"
+                            if (i < parties.length - 1) o += "<td></td>"
+                        }
+                        o += "</tr>"
+                        headerWritten = true;
+                    }
+
+                    if (line.startsWith("*")) {       // a section
                         // a section separator
                         o += "<tr class='section'>";
                         writeOneFieldUntil(0, parties.length, getLabel(line), "section", 1)
-                    } else {
-                        if (line.startsWith(" ")) {
-                            // marks a loop
-                            let loopStartMark = ""
-                            if (!inloop) {
-                                loopStartMark = "loopstart"
-                                inloop = true;
-                            }
-                            o += "<tr class='loop " + loopStartMark + "'>"
-                            line = line.trim();
-                        } else {
-                            o += "<tr class='" + checkLoopEnd() + "'>"
+                        o + "</tr>"
+                        continue;
+                    }
+
+                    // loops
+                    if (line.startsWith(" ")) {
+                        // marks a loop
+                        let loopStartMark = ""
+                        if (!inloop) {
+                            loopStartMark = "loopstart"
+                            inloop = true;
                         }
-                        o += "<td class='linenum'>" + linenum + "</td>";
-                        linenum++;
-                        let ps = partySeparator(line);
-                        if (ps == null) {
-                            // we just have advice for a party
-                            const p1 = line.split(" ")[0]
-                            const pos = writeFieldsUntil(p1);
-                            const label = line.substring(line.indexOf(" "))
-                            o += "<td class='set' title='" + p1 + "'>" + label + "</td>"
-                            writeRemainingFields(pos +1 )
+                        o += "<tr class='loop " + loopStartMark + "'>"
+                        line = line.trim();
+                    } else {
+                        o += "<tr class='" + checkLoopEnd() + "'>"
+                    }
+
+                    // regular seq diag stuff
+                    o += "<td class='linenum'>" + linenum + "</td>";
+                    linenum++;
+                    let ps = partySeparator(line);
+                    if (ps == null) {
+                        // we just have advice for a party
+                        const p1 = line.split(" ")[0]
+                        const pos = writeFieldsUntil(p1);
+                        const label = line.substring(line.indexOf(" "))
+                        o += "<td class='set' title='" + p1 + "'>" + label + "</td>"
+                        writeRemainingFields(pos +1 )
+                    } else {
+                        // we connect two parties
+
+                        let p1, p2, bidi ;
+                        let words = getPartysOfLine(line, ps);
+                        if (ps === "<->") {
+                            // bidi
+                            p1 = words[0];
+                            p2 = words[1];
+                            bidi = true;
+                        } else if (ps === "<-") {
+                            // reverse
+                            p1 = words[1];
+                            p2 = words[0];
+                        } else if (ps === "->") {
+                            // reverse
+                            p1 = words[0];
+                            p2 = words[1];
+                        }
+
+                        const posOfP1 = parties.indexOf(p1)
+                        const posOfP2 = parties.indexOf(p2)
+                        let pos = 0;
+                        if (posOfP1 < posOfP2) {
+                            pos = writeFieldsUntil(p1);
+                            o += "<td class='set pleft' title='" + p1 + "'></td>";    // the party field
+                            writeOneFieldUntil(pos, parties.indexOf(p2), getLabel(line), bidi? "bidi": "right");
+                            o += "<td class='set pright' title='" + p2 + "'></td>";    // the party field
+                            writeRemainingFields(parties.indexOf(p2)+1)
                         } else {
-                            // we connect two parties
-
-                            let p1, p2, bidi ;
-                            let words = getPartysOfLine(line, ps);
-                            if (ps === "<->") {
-                                // bidi
-                                p1 = words[0];
-                                p2 = words[1];
-                                bidi = true;
-                            } else if (ps === "<-") {
-                                // reverse
-                                p1 = words[1];
-                                p2 = words[0];
-                            } else if (ps === "->") {
-                                // reverse
-                                p1 = words[0];
-                                p2 = words[1];
-                            }
-
-                            const posOfP1 = parties.indexOf(p1)
-                            const posOfP2 = parties.indexOf(p2)
-                            let pos = 0;
-                            if (posOfP1 < posOfP2) {
-                                pos = writeFieldsUntil(p1);
-                                o += "<td class='set pleft' title='" + p1 + "'></td>";    // the party field
-                                writeOneFieldUntil(pos, parties.indexOf(p2), getLabel(line), bidi? "bidi": "right");
-                                o += "<td class='set pright' title='" + p2 + "'></td>";    // the party field
-                                writeRemainingFields(parties.indexOf(p2)+1)
-                            } else {
-                                pos = writeFieldsUntil(p2);
-                                o += "<td class='set pleft' title='" + p2 + "'></td>";    // the party field
-                                writeOneFieldUntil(pos, parties.indexOf(p1), getLabel(line), bidi? "bidi": "left");
-                                o += "<td class='set pright' title='" + p1 + "'></td>";    // the party field
-                                writeRemainingFields( parties.indexOf(p1) + 1 )
-                            }
+                            pos = writeFieldsUntil(p2);
+                            o += "<td class='set pleft' title='" + p2 + "'></td>";    // the party field
+                            writeOneFieldUntil(pos, parties.indexOf(p1), getLabel(line), bidi? "bidi": "left");
+                            o += "<td class='set pright' title='" + p1 + "'></td>";    // the party field
+                            writeRemainingFields( parties.indexOf(p1) + 1 )
                         }
                     }
                     o += "</tr>"
 
                 }
-                // write trailing HTML
-                let lastHTMLStart = 0
-                for (let i = lines.length-1 ; i >= 0; i--) {
-                    lastHTMLStart++;
-                    let line = lines[i]
-                    if (line.trim().length === 0 ) continue;
-                    if (line.startsWith("<")) continue;
-                    if (line.startsWith("#")) continue;
-                    break;
-                }
-                writeHTML(lines.slice(lines.length - lastHTMLStart +1))
+
                 o+= "</tbody></table>"
 
                 $out.html(o)
@@ -489,7 +514,7 @@
 
         })
         const HELP = "# Anything starting with a hash sign is a comment\n" +
-            "# Arbitrary HTML is shown first, then the parties follow. You can place HTML also at the end.\n" +
+            "# Arbitrary HTML must start with <. When spanning multiple lines let them start with a space\n" +
             "# A party is any side of a A->B or A<->B or A<-B word, or a first word of a line\n" +
             "# A line starting with a * starts a section\n" +
             "# A line starting with a space marks a loop\n" +
