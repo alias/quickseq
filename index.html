@@ -102,6 +102,9 @@
             color: gray;
         }
 
+        .striped {  /* thx to https://doodad.dev/pattern-generator/ */
+            background:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj48ZGVmcz48cGF0dGVybiBpZD0icGF0dGVybiIgd2lkdGg9IjciIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDQwLDQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoMTM1KSAiPjxyZWN0IGlkPSJwYXR0ZXJuLWJhY2tncm91bmQiIHdpZHRoPSI0MDAlIiBoZWlnaHQ9IjQwMCUiIGZpbGw9InJnYmEoMjM3LCAyNDIsIDI0NywxKSI+PC9yZWN0PiA8cGF0aCBmaWxsPSJyZ2JhKDE2MCwgMTc0LCAxOTIsMSkiIGQ9Ik0gLTEwIDMwIGggNjAgdjIgaC02MHogTS0xMCAtMTAgaDYwIHYyIGgtNjAiPjwvcGF0aD48cGF0aCBmaWxsPSJyZ2JhKDIzNywgMjQyLCAyNDcsMSkiIGQ9Im0gLTEwIDEwIGggNjAgdjEgaC02MHogTS0xMCAtMzAgaDYwIHYxIGgtNjB6Ij48L3BhdGg+PC9wYXR0ZXJuPiAgPC9kZWZzPiA8cmVjdCBmaWxsPSJ1cmwoI3BhdHRlcm4pIiBoZWlnaHQ9IjEwMCUiIHdpZHRoPSIxMDAlIj48L3JlY3Q+PC9zdmc+")
+        }
         /* some logic to highlight a loop */
         #output tr.loopstart > td:first-child:after {
             content: "loop";
@@ -291,6 +294,8 @@
                         continue;
                     }
 
+                    let rowclasses = "";
+
                     // loops
                     if (line.startsWith(" ")) {
                         // marks a loop
@@ -299,11 +304,18 @@
                             loopStartMark = "loopstart"
                             inloop = true;
                         }
-                        o += "<tr class='loop " + loopStartMark + "'>"
+                        rowclasses = "loop " + loopStartMark
                         line = line.trim();
                     } else {
-                        o += "<tr class='" + checkLoopEnd() + "'>"
+                        rowclasses = checkLoopEnd()
                     }
+
+                    // stripes
+                    if (line.startsWith("/")) {
+                        line = line.substring(1)
+                        rowclasses += " striped"
+                    }
+                    o += "<tr class='" + rowclasses + "'>"
 
                     // regular seq diag stuff
                     o += "<td class='linenum'>" + linenum + "</td>";
@@ -374,7 +386,8 @@
                     if (line.startsWith("#")) continue;  // a comment
                     if (line.startsWith("*")) continue;  // a section
                     if (line.startsWith("<")) continue;  // raw html
-                    if (line.startsWith(" ")) line = line.trim();  // a loop identation
+                    if (line.startsWith("/")) continue;  // dashed area
+                    if (line.startsWith(" ")) line = line.trim();  // a loop identation or cont' html
                     let ps = partySeparator(line);
                     if (ps == null) {
                         const words = line.split(" ") ;
@@ -517,7 +530,8 @@
             "# Arbitrary HTML must start with <. When spanning multiple lines let them start with a space\n" +
             "# A party is any side of a A->B or A<->B or A<-B word, or a first word of a line\n" +
             "# A line starting with a * starts a section\n" +
-            "# A line starting with a space marks a loop\n" +
+            "# Lines starting with a space comprise a loop\n" +
+            "# A line starting with / adds a background pattern (can be in a loop)\n" +
             "# An empty line makes an empty row too\n" +
             "# \n" +
             "# You may call this page with the parameters ghist=<id> to show a diagram from github. \n" +
